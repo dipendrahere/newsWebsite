@@ -49,3 +49,57 @@ The last packet successfully received from the server was 8,279,075 milliseconds
 2019-08-30 17:58:42 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
 2019-08-30 18:20:23 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
 2019-08-30 18:52:43 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:33:12 ERROR global:16 - Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2019-08-31 12:33:12 ERROR global:16 - Unable to make connection to DB
+2019-08-31 12:34:21 ERROR global:16 - Access denied for user 'root'@'localhost' (using password: YES)
+2019-08-31 12:34:21 ERROR global:16 - Unable to make connection to DB
+2019-08-31 12:37:21 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:41:06 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:41:14 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:42:15 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:42:17 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:49:30 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:49:44 ERROR global:16 - unable to fetch Article You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+2019-08-31 12:56:10 ERROR global:16 - unable to fetch Article Every derived table must have its own alias
+2019-08-31 12:58:12 ERROR global:16 - unable to fetch Article Before start of result set
+2019-08-31 12:58:44 ERROR global:16 - unable to fetch Article Before start of result set
+2019-08-31 12:58:46 ERROR global:16 - unable to fetch Article Before start of result set
+2019-08-31 12:59:09 ERROR global:16 - unable to fetch Article Before start of result set
+2019-08-31 13:03:38 INFO  global:13 - in articles
+2019-08-31 13:05:06 INFO  global:13 - in articles
+2019-08-31 13:07:10 INFO  global:13 - in articles
+2019-08-31 13:09:43 INFO  global:13 - in articles
+2019-08-31 13:11:28 INFO  global:13 - in articles
+2019-08-31 13:11:28 INFO  global:13 - Here 1
+2019-08-31 13:11:28 INFO  global:13 - Here 2
+2019-08-31 13:12:16 INFO  global:13 - in articles
+2019-08-31 13:12:16 INFO  global:13 - Here 1
+2019-08-31 13:12:16 INFO  global:13 - Here 2
+2019-08-31 13:12:16 INFO  global:13 - Here 3
+2019-08-31 13:13:43 INFO  global:13 - in articles
+2019-08-31 13:13:43 INFO  global:13 - Here 1
+2019-08-31 13:13:43 INFO  global:13 - Here 2
+2019-08-31 13:13:43 INFO  global:13 - Here 3
+2019-08-31 13:13:43 INFO  global:13 - Here
+2019-08-31 13:13:43 INFO  global:13 - in articles
+2019-08-31 13:13:43 INFO  global:13 - Here 1
+2019-08-31 13:13:43 INFO  global:13 - Here 2
+2019-08-31 13:13:43 INFO  global:13 - Here 3
+2019-08-31 13:13:43 INFO  global:13 - Here
+2019-08-31 13:13:43 INFO  global:13 - in articles
+2019-08-31 13:13:43 INFO  global:13 - Here 1
+2019-08-31 13:13:43 INFO  global:13 - Here 2
+2019-08-31 13:13:43 INFO  global:13 - Here 3
+2019-08-31 13:13:43 INFO  global:13 - Here
+2019-08-31 13:13:43 INFO  global:13 - in articles
+2019-08-31 13:13:43 INFO  global:13 - Here 1
+2019-08-31 13:13:43 INFO  global:13 - Here 2
+2019-08-31 13:13:43 INFO  global:13 - Here 3
+2019-08-31 13:13:43 INFO  global:13 - Here
+2019-08-31 13:13:43 INFO  global:13 - in articles
+2019-08-31 13:13:43 INFO  global:13 - Here 1
+2019-08-31 13:13:43 INFO  global:13 - Here 2
+2019-08-31 13:13:43 INFO  global:13 - Here 3
+2019-08-31 13:13:43 INFO  global:13 - Here

@@ -21,8 +21,8 @@ public class DBConnect {
     private DBConnect(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connnection = DriverManager.getConnection("jdbc:mysql://172.19.33.103:3306/newsaggregator","root","kEMXdVW9vMvQ");
-//            connnection = DriverManager.getConnection("jdbc:mysql://localhost/newsaggregator","root","Hello@123");
+//            connnection = DriverManager.getConnection("jdbc:mysql://172.19.33.103:3306/newsaggregator","root","kEMXdVW9vMvQ");
+            connnection = DriverManager.getConnection("jdbc:mysql://localhost/newsaggregator","root","vipin1407");
             statment = connnection.createStatement();
         }
         catch (ClassNotFoundException e) {
@@ -325,19 +325,22 @@ public class DBConnect {
     public NewsModel getArticles(int clusterId){
         NewsModel model = new NewsModel();
         try {
-            PreparedStatement preparedStatement = connnection.prepareStatement("select A.title, A.imageUrl, A.url, A.publishedDate from (select * from articles A join clusterArticleRelationship C on A.id = C.articleId where C.cluster_id = "+clusterId);
+            PreparedStatement preparedStatement = connnection.prepareStatement("select A.title, A.imageUrl, A.url, A.publishedDate from (select * from articles A join clusterArticleRelationship C on A.id = C.articleId where C.cluster_id = "+clusterId + ") as A");
             resultSet = preparedStatement.executeQuery();
-            String topic = resultSet.getString(1);
-            String url = resultSet.getString(3);
-            String imageUrl = resultSet.getString(2);
-            Date pubDate = resultSet.getDate(4);
-            News news = new News();
-            news.setImageUrl(imageUrl);
-            news.setTitle(topic);
-            news.setPublishedDate(pubDate);
+            while(resultSet.next()){
+                String topic = resultSet.getString(1);
+                String url = resultSet.getString(3);
+                String imageUrl = resultSet.getString(2);
+                Date pubDate = resultSet.getDate(4);
+                News news = new News();
+                news.setImageUrl(imageUrl);
+                news.setTitle(topic);
+                news.setPublishedDate(pubDate);
 //                news.setOrderScore(0);
-            news.setUrl(url);
-            model.addNews(news);
+                news.setUrl(url);
+                model.addNews(news);
+            }
+
         } catch (SQLException e) {
             Log.error("unable to fetch Article "+ e.getMessage());
             e.printStackTrace();

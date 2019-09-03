@@ -1,4 +1,5 @@
 import databaseService.DBConnect;
+import models.Log;
 
 import static spark.Spark.*;
 
