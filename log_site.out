@@ -103,3 +103,10 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2019-08-31 13:13:43 INFO  global:13 - Here 2
 2019-08-31 13:13:43 INFO  global:13 - Here 3
 2019-08-31 13:13:43 INFO  global:13 - Here
+2019-09-03 12:38:38 ERROR global:16 - Access denied for user 'root'@'localhost' (using password: YES)
+2019-09-03 12:38:38 ERROR global:16 - Unable to make connection to DB
+2019-09-03 12:39:08 ERROR global:16 - unable to fetch Article Cannot convert string 'http://www.skysports.com/football/news/12040/11798475/bruno-fernandes-says-he-agreed-deal-with-tottenham-but-sporting-blocked-move' to java.sql.Date value
+2019-09-03 13:33:15 ERROR global:16 - unable to fetch Article Illegal operation on empty result set.
+2019-09-03 16:03:16 ERROR global:16 - unable to fetch News Invalid length (48) for type TIMESTAMP
+2019-09-03 16:03:16 ERROR global:16 - unable to fetch News Invalid length (104) for type TIMESTAMP
+2019-09-03 16:05:26 ERROR global:16 - unable to fetch News Invalid length (50) for type TIMESTAMP
