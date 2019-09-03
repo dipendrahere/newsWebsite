@@ -8,8 +8,15 @@ public class News {
     private String imageUrl;
     private Date publishedDate;
     private double orderScore;
+    private double articleRank;
 
+    public double getArticleRank() {
+        return articleRank;
+    }
 
+    public void setArticleRank(double articleRank) {
+        this.articleRank = articleRank;
+    }
 
     public void setTitle(String title) {
         this.title = title;

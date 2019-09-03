@@ -2,9 +2,11 @@ package databaseService;
 
 import models.*;
 
+import javax.management.modelmbean.ModelMBean;
 import java.sql.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DBConnect {
     private static Connection connnection;
@@ -236,7 +238,7 @@ public class DBConnect {
     public static synchronized List<NewsModel> getListOfNews(){
         HashMap<Integer, List<News>> ret = new HashMap<>();
         try{
-            PreparedStatement preparedStatement = connnection.prepareStatement("select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 5) order by ((LENGTH(j.rssLinks) - LENGTH(REPLACE(j.rssLinks, '|', ''))) + diameter + recency + averageDate/totalPoints + totalPoints) desc;");
+            PreparedStatement preparedStatement = connnection.prepareStatement("select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 2) order by recency desc");
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 int cluster_id = resultSet.getInt(1);
@@ -267,7 +269,7 @@ public class DBConnect {
             e.printStackTrace();
         }
         List<NewsModel> modelList = new ArrayList<>();
-        for(Integer i: ret.keySet()){
+        for(Integer i: ret.keySet()) {
             NewsModel newsModel = new NewsModel();
             newsModel.setClusterId(i);
             List<News> strings = ret.get(i);
@@ -279,8 +281,9 @@ public class DBConnect {
 
     public List<NewsModel> getTopNews(int categoryId) {
         HashMap<Integer, List<News>> ret = new HashMap<>();
+        HashMap<Integer,ClusterInfo> infoMap = new HashMap<>();
         try {
-            String query = "select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks, j.category_id from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks, A.category_id from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.category_id = "+categoryId+" and j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 5) order by ((LENGTH(j.rssLinks) - LENGTH(REPLACE(j.rssLinks, '|', ''))) + diameter + recency + averageDate/totalPoints + totalPoints) desc;";
+            String query = "select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks, j.category_id from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks, A.category_id from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.category_id = "+categoryId+" and j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 2) order by  recency desc;";
             System.out.println(query);
             PreparedStatement preparedStatement = connnection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -296,6 +299,17 @@ public class DBConnect {
                 news.setPublishedDate(pubDate);
 //                news.setOrderScore(0);
                 news.setUrl(url);
+                double diameter = resultSet.getDouble(6);
+                Date recency = resultSet.getDate(7);
+                int totalPoints = resultSet.getInt(9);
+                int coverage = resultSet.getString(10).split("\\|").length;
+                ClusterInfo  ci = new ClusterInfo();
+                ci.setDiameter(diameter);
+                ci.setClusterId(cluster_id);
+                ci.setRecency(recency);
+                ci.setTotalPoints(totalPoints);
+                ci.setCoverage(coverage);
+                infoMap.put(cluster_id, ci);
                 if(ret.get(cluster_id) == null){
                     List<News> list = new ArrayList<>();
                     list.add(news);
@@ -316,8 +330,27 @@ public class DBConnect {
             NewsModel newsModel = new NewsModel();
             newsModel.setClusterId(i);
             List<News> strings = ret.get(i);
+            newsModel.setClusterInfo(infoMap.get(i));
             newsModel.setNews(strings);
+            newsModel.sortNews();
+            newsModel.setNews(newsModel.getNews().subList(0, 2));
             modelList.add(newsModel);
+        }
+        if(modelList.size() == 0){
+            return null;
+        }
+        Date d = modelList.get(0).getClusterInfo().getRecency();
+        for(NewsModel nm: modelList){
+            if(d.compareTo(nm.getClusterInfo().getRecency()) > 0){
+                d = nm.getClusterInfo().getRecency();
+            }
+        }
+        final Date mr = d;
+        Collections.sort(modelList, (a, b)->{
+            return (int)(b.getClusterInfo().score(mr)*1000 - a.getClusterInfo().score(mr)*1000);
+        });
+        for(NewsModel nm: modelList){
+            nm.setClusterScore(nm.getClusterInfo().sc);
         }
         return modelList;
     }
@@ -339,6 +372,7 @@ public class DBConnect {
 //                news.setOrderScore(0);
                 news.setUrl(url);
                 model.addNews(news);
+                model.sortNews();
             }
 
         } catch (SQLException e) {
