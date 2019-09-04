@@ -238,7 +238,7 @@ public class DBConnect {
     public static synchronized List<NewsModel> getListOfNews(){
         HashMap<Integer, List<News>> ret = new HashMap<>();
         try{
-            PreparedStatement preparedStatement = connnection.prepareStatement("select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 2) order by recency desc");
+            PreparedStatement preparedStatement = connnection.prepareStatement("select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 3) order by recency desc");
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 int cluster_id = resultSet.getInt(1);
@@ -282,9 +282,9 @@ public class DBConnect {
     public static synchronized List<NewsModel> getTopNews(int categoryId) {
         HashMap<Integer, List<News>> ret = new HashMap<>();
         HashMap<Integer,ClusterInfo> infoMap = new HashMap<>();
-        Set<String> contents = new HashSet<>();
+        Set<String> contents = new HashSet<String>();
         try {
-            String query = "select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks, j.category_id, j.content from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks, A.category_id, A.content from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.category_id = "+categoryId+" and j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 2) order by  recency desc;";
+            String query = "select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks, j.category_id, j.content from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks, A.category_id, A.content from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.category_id = "+categoryId+" and j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 3) order by  recency desc;";
             System.out.println(query);
             PreparedStatement preparedStatement = connnection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -295,14 +295,17 @@ public class DBConnect {
                 String imageUrl = resultSet.getString(3);
                 Date pubDate = resultSet.getDate(5);
                 String content = resultSet.getString(12);
-                if(contents.contains(content)){
+                String md5 = GlobalFunctions.getMd5(content);
+                if(contents.contains(md5)){
                     continue;
                 }
                 else{
-                    contents.add(content);
+                    contents.add(md5);
                 }
                 News news = new News();
                 news.setImageUrl(imageUrl);
+                String[] split = topic.split("\\|");
+                topic = split[split.length-1];
                 news.setTitle(topic);
                 news.setPublishedDate(pubDate);
 //                news.setOrderScore(0);
@@ -341,7 +344,8 @@ public class DBConnect {
             newsModel.setClusterInfo(infoMap.get(i));
             newsModel.setNews(strings);
             newsModel.sortNews();
-            newsModel.setNews(newsModel.getNews().subList(0, 2));
+            int min = Math.min(3, newsModel.getNews().size());
+            newsModel.setNews(newsModel.getNews().subList(0, min));
             modelList.add(newsModel);
         }
         if(modelList.size() == 0){
@@ -365,14 +369,25 @@ public class DBConnect {
 
     public static synchronized NewsModel getArticles(int clusterId){
         NewsModel model = new NewsModel();
+        Set<String> contents = new HashSet<>();
         try {
-            PreparedStatement preparedStatement = connnection.prepareStatement("select A.title, A.imageUrl, A.url, A.publishedDate from (select * from articles A join clusterArticleRelationship C on A.id = C.articleId where C.cluster_id = "+clusterId + ") as A");
+            PreparedStatement preparedStatement = connnection.prepareStatement("select A.title, A.imageUrl, A.url, A.publishedDate, A.content from (select * from articles A join clusterArticleRelationship C on A.id = C.articleId where C.cluster_id = "+clusterId + ") as A");
             resultSet = preparedStatement.executeQuery();
             while(resultSet.next()){
                 String topic = resultSet.getString(1);
+                String[] split = topic.split("\\|");
+                topic = split[split.length-1];
                 String url = resultSet.getString(3);
                 String imageUrl = resultSet.getString(2);
                 Date pubDate = resultSet.getDate(4);
+                String content = resultSet.getString(5);
+                String md5 = GlobalFunctions.getMd5(content);
+                if(contents.contains(md5)){
+                    continue;
+                }
+                else{
+                    contents.add(md5);
+                }
                 News news = new News();
                 news.setImageUrl(imageUrl);
                 news.setTitle(topic);
