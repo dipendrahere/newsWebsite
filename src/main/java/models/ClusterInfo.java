@@ -26,7 +26,7 @@ public class ClusterInfo {
         Integer cI = new Integer(coverage);
         double coverageParam = cI.doubleValue()/10.0;
         double diaParam = diameter;
-        sc = 5000000.0*timeParam+15.0*coverageParam + diaParam*20.0;
+        sc = (5000000.0*timeParam) + (15.0*coverageParam) + (diaParam*20.0);
         return sc;
     }
 
