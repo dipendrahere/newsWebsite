@@ -279,11 +279,12 @@ public class DBConnect {
         return modelList;
     }
 
-    public List<NewsModel> getTopNews(int categoryId) {
+    public static synchronized List<NewsModel> getTopNews(int categoryId) {
         HashMap<Integer, List<News>> ret = new HashMap<>();
         HashMap<Integer,ClusterInfo> infoMap = new HashMap<>();
+        Set<String> contents = new HashSet<>();
         try {
-            String query = "select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks, j.category_id from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks, A.category_id from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.category_id = "+categoryId+" and j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 2) order by  recency desc;";
+            String query = "select j.cluster_id, j.title, j.imageUrl, j.url, j.publishedDate, j.diameter, j.recency, j.averageDate, j.totalPoints, j.rssLinks, j.category_id, j.content from (select C.cluster_id, A.title, A.imageUrl, A.publishedDate, A.url, CI.diameter, CI.recency, CI.averageDate, CI.totalPoints, CI.rssLinks, A.category_id, A.content from articles A join clusterArticleRelationship C on A.id = C.articleId join clusterInfo CI on CI.id = C.cluster_id order by A.publishedDate) as j where j.category_id = "+categoryId+" and j.cluster_id  in (select (cluster_id) from clusterArticleRelationship group by cluster_id having count(cluster_id) >= 2) order by  recency desc;";
             System.out.println(query);
             PreparedStatement preparedStatement = connnection.prepareStatement(query);
             resultSet = preparedStatement.executeQuery();
@@ -293,6 +294,13 @@ public class DBConnect {
                 String url = resultSet.getString(4);
                 String imageUrl = resultSet.getString(3);
                 Date pubDate = resultSet.getDate(5);
+                String content = resultSet.getString(12);
+                if(contents.contains(content)){
+                    continue;
+                }
+                else{
+                    contents.add(content);
+                }
                 News news = new News();
                 news.setImageUrl(imageUrl);
                 news.setTitle(topic);
@@ -355,7 +363,7 @@ public class DBConnect {
         return modelList;
     }
 
-    public NewsModel getArticles(int clusterId){
+    public static synchronized NewsModel getArticles(int clusterId){
         NewsModel model = new NewsModel();
         try {
             PreparedStatement preparedStatement = connnection.prepareStatement("select A.title, A.imageUrl, A.url, A.publishedDate from (select * from articles A join clusterArticleRelationship C on A.id = C.articleId where C.cluster_id = "+clusterId + ") as A");
