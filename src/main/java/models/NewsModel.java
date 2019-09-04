@@ -55,8 +55,10 @@ public class NewsModel {
     public void sortNews(){
         Collections.sort(news, (a, b) -> {
             long time = (b.getPublishedDate().getTime() - a.getPublishedDate().getTime());
-            time = Math.min(time / 10000000, Integer.MAX_VALUE);
-            return (int)(time);
+            Double diameter = (b.getArticleRank() - a.getArticleRank());
+            diameter *= 2000000000;
+            time = Math.min(time/10000000, Integer.MAX_VALUE);
+            return (int)(time + diameter);
         });
     }
 }

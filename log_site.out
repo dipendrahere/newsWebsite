@@ -117,3 +117,8 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
 2019-09-03 23:35:52 ERROR global:16 - unable to fetch News Invalid length (48) for type TIMESTAMP
 2019-09-03 23:36:37 ERROR global:16 - unable to fetch News After end of result set
 2019-09-03 23:36:43 ERROR global:16 - unable to fetch News Invalid length (90) for type TIMESTAMP
+2019-09-04 12:12:58 ERROR global:16 - unable to fetch News Invalid length (6) for type TIMESTAMP
+2019-09-04 12:41:20 ERROR global:16 - unable to fetch News Invalid length (116) for type TIMESTAMP
+2019-09-04 13:22:13 ERROR global:16 - unable to fetch News Invalid length (50) for type TIMESTAMP
+2019-09-04 13:23:01 ERROR global:16 - unable to fetch News Invalid length (48) for type TIMESTAMP
+2019-09-04 13:23:01 ERROR global:16 - unable to fetch News Invalid length (18) for type TIMESTAMP
