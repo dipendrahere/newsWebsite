@@ -19,7 +19,7 @@ public class NewsService {
     }
 
     public String getAllClusters() {
-            return gson.toJson(DBConnect.getInstance().getListOfNews());
+            return gson.toJson(DBConnect.getInstance().getArticles(1));
         }
 
     public String getArticles(int clusterId) {

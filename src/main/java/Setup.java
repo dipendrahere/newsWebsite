@@ -31,6 +31,7 @@ public class Setup {
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
         NewsService newsService = NewsService.getInstance();
+
         get("/news", ((request, response) -> {
             try {
                 if (request.queryParams().contains("categoryId")) {
@@ -58,7 +59,7 @@ public class Setup {
                     return NewsService.getInstance().getArticles(clusterId);
                 }
                 response.status(400);
-                return "Send category Id";
+                return "Send cluster Id";
             }
             catch (Exception e){
                 return e.getMessage();
