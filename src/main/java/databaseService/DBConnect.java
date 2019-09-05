@@ -33,7 +33,7 @@ public class DBConnect {
     private DBConnect(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            connnection = DriverManager.getConnection("jdbc:mysql://172.19.33.103:3306/newsaggregator","root","kEMXdVW9vMvQ");
+            connnection = DriverManager.getConnection("jdbc:mysql://172.19.33.103:3306/news","root","kEMXdVW9vMvQ");
 //            connnection = DriverManager.getConnection("jdbc:mysql://localhost/newsaggregator","root","vipin1407");
             statment = connnection.createStatement();
         }
@@ -46,7 +46,6 @@ public class DBConnect {
         }
     }
 
-//    // Todo You transaction to insert to avoid inconsistacy in the database
 //
 //    public static synchronized List<NewsModel> getListOfNews(){
 //        HashMap<Integer, List<News>> ret = new HashMap<>();

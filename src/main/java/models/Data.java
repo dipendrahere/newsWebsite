@@ -18,7 +18,7 @@ public class Data {
             map = new HashMap<>();
             news = new HashMap<>();
             Class.forName("com.mysql.jdbc.Driver");
-            connnection = DriverManager.getConnection("jdbc:mysql://172.19.33.103:3306/newsaggregator","root","kEMXdVW9vMvQ");
+            connnection = DriverManager.getConnection("jdbc:mysql://172.19.33.103:3306/news","root","kEMXdVW9vMvQ");
 //            connnection = DriverManager.getConnection("jdbc:mysql://localhost/newsaggregator","root","vipin1407");
             Statement statement = connnection.createStatement();
         }
@@ -31,7 +31,7 @@ public class Data {
         }
     }
 
-    public static synchronized List<CloneResultSet> getCat(int id) throws SQLException {
+    public static List<CloneResultSet> getCat(int id) throws SQLException {
         synchronized (map) {
             List<CloneResultSet> rs;
             rs = map.get(id);
@@ -77,7 +77,8 @@ public class Data {
                     public void run() {
                         try {
                             Thread.sleep(300000);
-                            map.put(id, null);
+                            map.remove(id);
+//                            map.put(id, null);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -89,7 +90,7 @@ public class Data {
         }
     }
 
-    public static synchronized List<CloneNewsSet> getCluster(int id) throws SQLException {
+    public static List<CloneNewsSet> getCluster(int id) throws SQLException {
         synchronized (news) {
             List<CloneNewsSet> rs;
             rs = news.get(id);
@@ -99,12 +100,12 @@ public class Data {
                 PreparedStatement preparedStatement = connnection.prepareStatement(query);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 List<CloneNewsSet> list = new ArrayList<>();
-
                 while(resultSet.next()){
                     String topic = resultSet.getString(1);
                     String[] split = topic.split("\\|");
                     topic = split[split.length-1];
                     String url = resultSet.getString(3);
+                    //System.out.println(url);
                     String imageUrl = resultSet.getString(2);
                     Date pubDate = resultSet.getDate(4);
                     String content = resultSet.getString(5);
@@ -124,7 +125,7 @@ public class Data {
                     public void run() {
                         try {
                             Thread.sleep(100000);
-                            news.put(id, null);
+                            news.remove(id);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
